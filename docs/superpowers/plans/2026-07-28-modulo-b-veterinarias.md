@@ -10,7 +10,9 @@
 
 ## Global Constraints
 
-- Directorio del proyecto: `/Users/lelo/Documents/ETERNALGROWTH/Proyectos/NICHOS/veterinarias` (raíz del app Next.js; el repo git raíz es `/Users/lelo/Documents/ETERNALGROWTH/Proyectos`).
+- Directorio del proyecto: `/Users/lelo/Documents/ETERNALGROWTH/Proyectos/NICHOS/veterinarias`. **Es un repositorio git independiente** con remoto `origin` → `https://github.com/daniellelooo/eternalgrowth-veterinarias` (privado). Ya no forma parte del repo `Proyectos`.
+- **Los subagentes NO commitean ni pushean.** El orquestador commitea y pushea al cerrar cada fase o feature grande. Los subagentes solo dejan el árbol de trabajo limpio y verificado.
+- **Formularios:** shadcn v4 ya no incluye el componente `form` basado en react-hook-form. Usamos los primitivos `Field` (`field.tsx`) + validación con zod en Server Actions (y validación ligera en cliente con `useState`). NO instalar react-hook-form.
 - Gestor de paquetes: **pnpm**. Node v25.
 - **Todo el copy de UI en español (Colombia). Código, identificadores y commits en inglés (mensajes de commit pueden ser en español, prefijos convencionales `feat:`, `fix:`, `docs:`, `test:`).**
 - Zona horaria fija del negocio: `America/Bogota`. Timestamps en DB como `timestamptz`.
@@ -18,10 +20,21 @@
 - Mobile-first. El sitio público debe funcionar perfecto en 375px de ancho.
 - Diseño: los subagentes de UI **DEBEN invocar las skills** `frontend-design:frontend-design` y `high-end-visual-design` antes de escribir JSX/CSS. Nada de diseño genérico de AI (gradientes morados por defecto, emojis como iconos, cards genéricas). Usar iconos `lucide-react`.
 - Variables de entorno (definidas en `.env.example` en Task 1): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_SECRET_KEY` (alias moderno si el CLI lo emite), `N8N_WEBHOOK_URL` (opcional), `N8N_API_KEY`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`.
-- Supabase corre local con `supabase start` (requiere Docker: `open -a Docker` y esperar a que responda `docker info`).
+- Supabase corre local con `supabase start` (requiere Docker: `open -a Docker` y esperar a que responda `docker info`). **Puertos remapeados a 57321 (API) / 57322 (db) / 57323 (Studio)** porque los default 54321+ ya están ocupados por otros proyectos Supabase en esta máquina (SUBASTAS, opticas, erp-logistico).
 - Estados de cita (enum en DB, usar exactamente estos strings): `pendiente | confirmada | atendida | cancelada | inasistencia`. Canales: `web | whatsapp | manual | reactivacion | recordatorio`.
-- Cada task termina con `pnpm typecheck && pnpm build` (y `pnpm test` donde haya tests) en verde + commit. No commitear `.env`.
-- El commit se hace desde el repo raíz `Proyectos` incluyendo solo rutas bajo `NICHOS/veterinarias`.
+- Cada task termina con `pnpm typecheck && pnpm build` (y `pnpm test` donde haya tests) en verde. No commitear `.env`.
+
+## Fases (checkpoints de commit + revisión)
+
+| Fase | Tasks | Feature |
+|---|---|---|
+| 1 | 1 | Scaffold ✅ |
+| 2 | 2, 3, 4 | Fundación de datos: schema Supabase, motor de agenda, API |
+| 3 | 5, 6 | Sitio público + agendamiento |
+| 4 | 7, 8, 9, 10 | Panel de administración |
+| 5 | 11, 12 | SEO, pulido y documentación |
+
+Al cerrar cada fase: commit + push a `origin/main`, resumen y dev server para revisión.
 
 ---
 
@@ -367,9 +380,11 @@ describe("computeAvailableSlots", () => {
   it("un servicio largo no cabe sobre una cita intermedia", () => {
     const busy = [{ start: new Date("2026-07-28T14:00:00.000Z"), end: new Date("2026-07-28T14:30:00.000Z") }];
     const slots = computeAvailableSlots({ date: TUESDAY, durationMinutes: 60, businessHours: HOURS, busy, now: PAST });
-    // 8:00 no cabe (choca 9:00), 8:30 tampoco; 9:30 sí
-    expect(slots.map(iso)).not.toContain("2026-07-28T13:00:00.000Z");
-    expect(slots.map(iso)).toContain("2026-07-28T14:30:00.000Z");
+    // CORREGIDO: citas consecutivas (back-to-back) son válidas, no solapan.
+    expect(slots.map(iso)).not.toContain("2026-07-28T13:30:00.000Z"); // 8:30-9:30 solapa
+    expect(slots.map(iso)).not.toContain("2026-07-28T14:00:00.000Z"); // 9:00-10:00 solapa
+    expect(slots.map(iso)).toContain("2026-07-28T13:00:00.000Z");     // 8:00-9:00 consecutivo, válido
+    expect(slots.map(iso)).toContain("2026-07-28T14:30:00.000Z");     // 9:30 tras la cita, válido
   });
 
   it("día sin horario configurado devuelve []", () => {
