@@ -4,12 +4,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Dirección de arte — Veterinaria Demo
+ * Paleta cálida y de confianza (verde pino profundo + arena + ámbar/terracota),
+ * pensada para una clínica veterinaria local, no un dashboard SaaS.
+ * Tipografía: slab serif "Bitter" (títulos, robusta y cercana, evoca rótulos
+ * de consultorio de barrio) + sans humanista "Figtree" (texto, muy legible).
+ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-figtree);
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-heading: var(--font-bitter);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -46,33 +53,59 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Tokens de marca, expuestos como utilidades (bg-pine, text-clay, etc.) */
+  --color-pine: var(--brand-pine);
+  --color-pine-deep: var(--brand-pine-deep);
+  --color-sand: var(--brand-sand);
+  --color-cream: var(--brand-cream);
+  --color-ink: var(--brand-ink);
+  --color-ink-soft: var(--brand-ink-soft);
+  --color-amber: var(--brand-amber);
+  --color-amber-deep: var(--brand-amber-deep);
+  --color-clay: var(--brand-clay);
+  --color-sage: var(--brand-sage);
+  --color-sage-tint: var(--brand-sage-tint);
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  /* Paleta de marca */
+  --brand-pine: #1f3b33;
+  --brand-pine-deep: #152a23;
+  --brand-sand: #f1e9d8;
+  --brand-cream: #fbf7ee;
+  --brand-ink: #221d17;
+  --brand-ink-soft: #5c5347;
+  --brand-amber: #d9a441;
+  --brand-amber-deep: #b9862f;
+  --brand-clay: #b5563a;
+  --brand-sage: #7c9184;
+  --brand-sage-tint: #e3e7dc;
+
+  --background: var(--brand-sand);
+  --foreground: var(--brand-ink);
+  --card: var(--brand-cream);
+  --card-foreground: var(--brand-ink);
+  --popover: var(--brand-cream);
+  --popover-foreground: var(--brand-ink);
+  --primary: var(--brand-pine);
+  --primary-foreground: var(--brand-cream);
+  --secondary: var(--brand-sage-tint);
+  --secondary-foreground: var(--brand-pine);
+  --muted: #e8dfcb;
+  --muted-foreground: var(--brand-ink-soft);
+  --accent: var(--brand-sage-tint);
+  --accent-foreground: var(--brand-pine);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: rgb(34 29 23 / 0.12);
+  --input: rgb(34 29 23 / 0.16);
+  --ring: rgb(31 59 51 / 0.45);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -126,5 +159,13 @@
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
