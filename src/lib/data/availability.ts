@@ -3,6 +3,12 @@ import { TZDate } from "@date-fns/tz";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { computeAvailableSlots } from "@/lib/availability";
 import { getClinicSettings } from "@/lib/data/settings";
+import {
+  DEMO_BUSINESS_HOURS,
+  DEMO_SERVICES,
+  DEMO_SETTINGS,
+  isDemoMode,
+} from "@/lib/data/demo";
 
 const TIMEZONE = "America/Bogota";
 
@@ -35,6 +41,26 @@ export async function getAvailableSlotsForDate(
   dateISO: string,
   serviceId: string
 ): Promise<{ startsAt: string }[]> {
+  // Modo demo: mismo motor de cálculo, pero con horarios quemados y sin
+  // citas ocupadas, porque no hay base de datos que consultar.
+  if (isDemoMode()) {
+    const demoService = DEMO_SERVICES.find((s) => s.id === serviceId);
+    if (!demoService) return [];
+
+    const demoSlots = computeAvailableSlots({
+      date: dateISO,
+      durationMinutes: demoService.duration_minutes,
+      businessHours: DEMO_BUSINESS_HOURS,
+      busy: [],
+      now: new Date(),
+      leadMinutes: DEMO_SETTINGS.booking_lead_minutes,
+      stepMinutes: DEMO_SETTINGS.slot_step_minutes,
+      timezone: TIMEZONE,
+    });
+
+    return demoSlots.map((s) => ({ startsAt: s.toISOString() }));
+  }
+
   const supabase = createAdminClient();
 
   const { data: service, error: serviceError } = await supabase

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { addMinutes } from "date-fns";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getAvailableSlotsForDate, toBogotaDateISO } from "@/lib/data/availability";
+import { DEMO_SERVICES, encodeDemoAppointment, isDemoMode } from "@/lib/data/demo";
 import { notifyN8n } from "@/lib/n8n";
 import type { Appointment } from "@/lib/types";
 
@@ -34,6 +35,37 @@ export async function createPublicAppointment(
   }
 
   const { serviceId, startsAt, customerName, customerPhone, petName, notes } = parsed.data;
+
+  // Modo demo: se valida y se comprueba el horario igual que en real, pero no
+  // hay dónde insertar, así que el resumen viaja codificado a la confirmación.
+  if (isDemoMode()) {
+    const demoService = DEMO_SERVICES.find((s) => s.id === serviceId);
+    if (!demoService || !demoService.active) {
+      return { error: "El servicio seleccionado ya no está disponible." };
+    }
+
+    const demoStart = new Date(startsAt);
+    if (Number.isNaN(demoStart.getTime())) {
+      return { error: "Fecha y hora inválidas." };
+    }
+
+    const demoSlots = await getAvailableSlotsForDate(
+      toBogotaDateISO(demoStart),
+      serviceId
+    );
+    if (!demoSlots.some((s) => s.startsAt === demoStart.toISOString())) {
+      return { error: "Ese horario ya no está disponible. Por favor elige otro." };
+    }
+
+    return {
+      id: encodeDemoAppointment({
+        serviceId,
+        startsAt: demoStart.toISOString(),
+        customerName,
+        petName: petName ?? null,
+      }),
+    };
+  }
 
   const supabase = createAdminClient();
 

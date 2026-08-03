@@ -1,5 +1,11 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  DEMO_BUSINESS_HOURS,
+  DEMO_SERVICES,
+  DEMO_SETTINGS,
+  isDemoMode,
+} from "@/lib/data/demo";
 import type { BusinessHour, ClinicSettings, Service } from "@/lib/types";
 
 /**
@@ -7,6 +13,8 @@ import type { BusinessHour, ClinicSettings, Service } from "@/lib/types";
  * se crea vía seed/migración y no debería faltar en un entorno correcto.
  */
 export async function getClinicSettings(): Promise<ClinicSettings> {
+  if (isDemoMode()) return DEMO_SETTINGS;
+
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("clinic_settings")
@@ -23,6 +31,8 @@ export async function getClinicSettings(): Promise<ClinicSettings> {
 
 /** Servicios activos, ordenados para mostrar en el sitio público y el wizard. */
 export async function getActiveServices(): Promise<Service[]> {
+  if (isDemoMode()) return DEMO_SERVICES;
+
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("services")
@@ -43,6 +53,8 @@ export async function getActiveServices(): Promise<Service[]> {
  * mostrar horarios y por el motor de disponibilidad.
  */
 export async function getBusinessHours(): Promise<BusinessHour[]> {
+  if (isDemoMode()) return DEMO_BUSINESS_HOURS;
+
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("business_hours")

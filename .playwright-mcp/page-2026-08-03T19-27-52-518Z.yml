@@ -1,0 +1,60 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e2]:
+    - banner [ref=f2e3]:
+      - generic [ref=f2e4]:
+        - link "Veterinaria Demo" [ref=f2e5] [cursor=pointer]:
+          - /url: /
+        - navigation [ref=f2e14]:
+          - link "Servicios" [ref=f2e15] [cursor=pointer]:
+            - /url: "#servicios"
+          - link "Horarios" [ref=f2e16] [cursor=pointer]:
+            - /url: "#horarios"
+          - link "Ubicación" [ref=f2e17] [cursor=pointer]:
+            - /url: "#ubicacion"
+        - link [ref=f2e19] [cursor=pointer]:
+          - /url: /agendar
+    - main [ref=f2e23]:
+      - generic [ref=f2e27]:
+        - heading "¡Cita agendada!" [level=1] [ref=f2e32]
+        - paragraph [ref=f2e33]: Te escribiremos por WhatsApp para confirmar los detalles. Guarda este resumen mientras tanto.
+        - generic [ref=f2e34]:
+          - generic [ref=f2e35]:
+            - generic [ref=f2e43]:
+              - paragraph [ref=f2e44]: Servicio
+              - paragraph [ref=f2e45]: Consulta general
+            - generic [ref=f2e51]:
+              - paragraph [ref=f2e52]: Fecha y hora
+              - paragraph [ref=f2e53]: Miércoles 5 de agosto · 9:30 a.m.
+            - generic [ref=f2e59]:
+              - paragraph [ref=f2e60]: A nombre de
+              - paragraph [ref=f2e61]: Daniel León · Rocky
+          - generic [ref=f2e66]:
+            - generic [ref=f2e67]: Duración estimada
+            - generic [ref=f2e68]: 30 min
+          - generic [ref=f2e69]:
+            - generic [ref=f2e70]: Valor
+            - generic [ref=f2e71]: $ 60.000
+        - generic [ref=f2e72]:
+          - link "Escribir por WhatsApp" [ref=f2e73] [cursor=pointer]:
+            - /url: https://wa.me/573000000000
+          - link [ref=f2e76] [cursor=pointer]:
+            - /url: /
+    - contentinfo [ref=f2e80]:
+      - generic [ref=f2e81]:
+        - generic [ref=f2e82]:
+          - generic [ref=f2e83]:
+            - generic [ref=f2e84]: Veterinaria Demo
+            - paragraph [ref=f2e93]: Consulta general, vacunación, desparasitación y más, con seguimiento cercano a cada mascota.
+          - generic [ref=f2e94]:
+            - heading "Contacto" [level=3] [ref=f2e95]
+            - link "604 000 0000" [ref=f2e96] [cursor=pointer]:
+              - /url: tel:6040000000
+            - link "WhatsApp" [ref=f2e99] [cursor=pointer]:
+              - /url: https://wa.me/573000000000
+            - link "contacto@veterinaria.local" [ref=f2e102] [cursor=pointer]:
+              - /url: mailto:contacto@veterinaria.local
+          - generic [ref=f2e106]:
+            - heading "Ubicación" [level=3] [ref=f2e107]
+            - generic [ref=f2e108]: "Cra. 43A #10-10, Medellín"
+        - generic [ref=f2e112]: © 2026 Veterinaria Demo. Todos los derechos reservados.
+  - alert [ref=f2e113]
